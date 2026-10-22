@@ -7391,6 +7391,13 @@
     let currentQuantity = 1;
     let cart = [];
 
+    // Capture Affiliate Referral from URL (15% Pay-After-Sale Program)
+    const urlParams = new URLSearchParams(window.location.search);
+    const affiliateRef = urlParams.get('ref');
+    if (affiliateRef) {
+      localStorage.setItem('novatrend_affiliate_ref', affiliateRef);
+    }
+
     // Filter Department
     function filterDepartment(dept, btnElement) {
       document.querySelectorAll('.dept-pill').forEach(el => {
@@ -7674,6 +7681,8 @@
       form.action = 'https://www.paypal.com/cgi-bin/webscr';
       form.target = '_blank';
 
+      const activeRef = localStorage.getItem('novatrend_affiliate_ref') || 'DIRECT';
+
       const fields = {
         'cmd': '_xclick',
         'business': 'krishnashrayjewels@gmail.com',
@@ -7687,7 +7696,7 @@
         'city': city,
         'zip': zip,
         'email': email,
-        'custom': JSON.stringify({ pid: currentSelectedProduct.pid, hub: currentSelectedProduct.hub, ts: Date.now() }),
+        'custom': JSON.stringify({ pid: currentSelectedProduct.pid, hub: currentSelectedProduct.hub, ref: activeRef, ts: Date.now() }),
         'return': window.location.href + '?payment_success=true',
         'cancel_return': window.location.href + '?payment_cancelled=true'
       };
